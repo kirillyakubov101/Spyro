@@ -26,4 +26,28 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+
+	float DeltaTimeVariable = 0.f;
+
+	UPROPERTY(EditDefaultsOnly,Category="Stats")
+	float MoveSpeed;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+	float SprintSpeedMult;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+	float jumpForce;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Stats")
+	USkeletalMeshComponent* BodyMesh;
+
+	void MoveForward(float axis);
+	void MoveHorizontal(float axis);
+	void LookVertical(float axis);
+	void LookHorizontal(float axis);
+	void Jump();
+	
+
+
 };
