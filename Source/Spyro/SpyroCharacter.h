@@ -28,7 +28,11 @@ public:
 
 private:
 
-	float DeltaTimeVariable = 0.f;
+	UPROPERTY(EditDefaultsOnly)
+		class USpringArmComponent* SpringArm;
+
+	UPROPERTY(EditDefaultsOnly)
+		class UCameraComponent* CameraMain;
 
 	UPROPERTY(EditDefaultsOnly,Category="Stats")
 	float MoveSpeed;
@@ -40,12 +44,14 @@ private:
 	float jumpForce;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
-	USkeletalMeshComponent* BodyMesh;
+	float TurnRate;
+
+	UPROPERTY(EditAnywhere, Category = "Stats")
+	UStaticMeshComponent* BodyMesh;
 
 	void MoveForward(float axis);
 	void MoveHorizontal(float axis);
-	void LookVertical(float axis);
-	void LookHorizontal(float axis);
+	
 	void Jump();
 	
 
