@@ -29,10 +29,10 @@ public:
 private:
 
 	UPROPERTY(EditDefaultsOnly)
-		class USpringArmComponent* SpringArm;
+	class USpringArmComponent* SpringArm;
 
 	UPROPERTY(EditDefaultsOnly)
-		class UCameraComponent* CameraMain;
+	class UCameraComponent* CameraMain;
 
 	UPROPERTY(EditDefaultsOnly,Category="Stats")
 	float MoveSpeed;
@@ -49,11 +49,13 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Stats")
 	UStaticMeshComponent* BodyMesh;
 
+	
+
 	void MoveForward(float axis);
 	void MoveHorizontal(float axis);
 	
 	void Jump();
 	
-
-
+private:
+	class UCharacterMovementComponent* CharacterMovementComponent;
 };

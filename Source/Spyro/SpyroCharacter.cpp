@@ -5,6 +5,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ASpyroCharacter::ASpyroCharacter()
@@ -32,14 +33,14 @@ void ASpyroCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	CharacterMovementComponent = GetCharacterMovement(); //get the characterMovement
+
 }
 
 // Called every frame
 void ASpyroCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-
 }
 
 // Called to bind functionality to input
@@ -68,9 +69,7 @@ void ASpyroCharacter::MoveForward(float axis)
 		//const FRotator Rotation = Controller->GetControlRotation(); //same as telling the camera rotation
 		const FRotator Rotation = CameraMain->GetComponentRotation(); 
 		const FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
-		//const FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X); //direction in which we want the plyaer to move
 
-		//MySolution
 		FRotator newRot = UKismetMathLibrary::FindLookAtRotation(CameraMain->GetComponentLocation(),GetActorLocation());
 		newRot.Pitch = 0.f;
 		newRot.Roll = 0.f;
@@ -78,17 +77,6 @@ void ASpyroCharacter::MoveForward(float axis)
 		AddMovementInput(CameraMain->GetForwardVector(), axis); //move object
 		FRotator CurrentRotation = FMath::RInterpTo(GetActorRotation(), newRot, GetWorld()->GetDeltaSeconds(), 10.0f); //rotate body
 		SetActorRotation(CurrentRotation);
-		//End
-
-		/*FRotator NewRotation = FMath::RInterpTo(BodyMesh->GetComponentRotation(), Direction.Rotation(), GetWorld()->GetDeltaSeconds(), 10.f);
-		BodyMesh->SetWorldRotation(NewRotation);
-
-		AddMovementInput(Direction, axis);*/
-		
-		//DrawDebugLine(GetWorld(), Yaw.Vector(), Yaw.Vector() * 10000.f, FColor::Blue, false,3.f);
-		
-		
-
 		
 	}
 	
@@ -98,22 +86,16 @@ void ASpyroCharacter::MoveHorizontal(float axis)
 {
 	if (Controller != nullptr && axis != 0)
 	{
-		//const FRotator Rotation = Controller->GetControlRotation();
+		
 		const FRotator Rotation = CameraMain->GetComponentRotation();
 		const FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
 
 		AddMovementInput(CameraMain->GetRightVector(), axis);
 
-		//FRotator newRot = UKismetMathLibrary::FindLookAtRotation(CameraMain->GetComponentLocation(), GetActorLocation());
-		/*newRot.Pitch = 0.f;
-		newRot.Roll = 0.f;*/
+		
 		FRotator CurrentRotation = FMath::RInterpTo(GetActorRotation(), (CameraMain->GetRightVector()*axis).Rotation(), GetWorld()->GetDeltaSeconds(), 10.0f); //rotate body
 		SetActorRotation(CurrentRotation);
-		//const FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::Y); //direction in which we want the plyaer to move
-		//AddMovementInput(Direction, axis);
 		
-		/*FRotator NewRotation = FMath::RInterpTo(BodyMesh->GetComponentRotation(), Direction.Rotation(), GetWorld()->GetDeltaSeconds(), 2);
-		BodyMesh->SetWorldRotation(NewRotation);*/
 	}
 }
 
@@ -122,5 +104,8 @@ void ASpyroCharacter::MoveHorizontal(float axis)
 void ASpyroCharacter::Jump() 
 {
 	ACharacter::Jump();
+
+	
+	
 }
 
