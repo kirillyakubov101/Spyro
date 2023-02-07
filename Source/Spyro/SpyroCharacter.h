@@ -26,6 +26,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
+
 private:
 
 	UPROPERTY(EditDefaultsOnly)
@@ -53,8 +55,16 @@ private:
 
 	void MoveForward(float axis);
 	void MoveHorizontal(float axis);
-	
-	void Jump();
+
+	void CallJumpEvent();
+	void CallEndJumpEvent();
+
+public:
+	UFUNCTION(BlueprintImplementableEvent)
+	void JumpEvent();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StopJumpEvent();
 	
 private:
 	class UCharacterMovementComponent* CharacterMovementComponent;

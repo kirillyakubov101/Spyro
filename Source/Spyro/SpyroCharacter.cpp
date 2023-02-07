@@ -56,10 +56,13 @@ void ASpyroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("LookVertical", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookHorizontal", this, &APawn::AddControllerYawInput);
 
-	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed,this, &ASpyroCharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Released, this, &ASpyroCharacter::StopJumping);
-
+	/*PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed,this, &ASpyroCharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Released, this, &ASpyroCharacter::StopJumping);*/
+	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ASpyroCharacter::CallJumpEvent);
+	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Released, this, &ASpyroCharacter::CallEndJumpEvent);
 }
+
+
 
 
 void ASpyroCharacter::MoveForward(float axis)
@@ -99,13 +102,14 @@ void ASpyroCharacter::MoveHorizontal(float axis)
 	}
 }
 
-
-
-void ASpyroCharacter::Jump() 
+void ASpyroCharacter::CallJumpEvent()
 {
-	ACharacter::Jump();
-
-	
-	
+	JumpEvent();
 }
+
+void ASpyroCharacter::CallEndJumpEvent()
+{
+	StopJumpEvent();
+}
+
 
