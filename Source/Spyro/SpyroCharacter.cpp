@@ -72,13 +72,24 @@ void ASpyroCharacter::MoveForward(float axis)
 		//const FRotator Rotation = Controller->GetControlRotation(); //same as telling the camera rotation
 		const FRotator Rotation = CameraMain->GetComponentRotation(); 
 		const FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
+		FRotator newRot;
+		if (axis > 0.f) {
 
-		FRotator newRot = UKismetMathLibrary::FindLookAtRotation(CameraMain->GetComponentLocation(),GetActorLocation());
-		newRot.Pitch = 0.f;
-		newRot.Roll = 0.f;
+			newRot = UKismetMathLibrary::FindLookAtRotation(CameraMain->GetComponentLocation(), GetActorLocation());
+			newRot.Pitch = 0.f;
+			newRot.Roll = 0.f;
+		}
+		else if(axis < 0.f)
+		{
+			newRot = UKismetMathLibrary::FindLookAtRotation(CameraMain->GetComponentLocation() * (-1), GetActorLocation() *  ( - 1));
+			newRot.Pitch = 0.f;
+			newRot.Roll = 0.f;
+			
+		}
+	
 
 		AddMovementInput(CameraMain->GetForwardVector(), axis); //move object
-		FRotator CurrentRotation = FMath::RInterpTo(GetActorRotation(), newRot, GetWorld()->GetDeltaSeconds(), 10.0f); //rotate body
+		FRotator CurrentRotation = FMath::RInterpTo(GetActorRotation(), newRot, GetWorld()->GetDeltaSeconds(), TurnRate); //rotate body
 		SetActorRotation(CurrentRotation);
 		
 	}
@@ -96,7 +107,7 @@ void ASpyroCharacter::MoveHorizontal(float axis)
 		AddMovementInput(CameraMain->GetRightVector(), axis);
 
 		
-		FRotator CurrentRotation = FMath::RInterpTo(GetActorRotation(), (CameraMain->GetRightVector()*axis).Rotation(), GetWorld()->GetDeltaSeconds(), 10.0f); //rotate body
+		FRotator CurrentRotation = FMath::RInterpTo(GetActorRotation(), (CameraMain->GetRightVector()*axis).Rotation(), GetWorld()->GetDeltaSeconds(), TurnRate); //rotate body
 		SetActorRotation(CurrentRotation);
 		
 	}
