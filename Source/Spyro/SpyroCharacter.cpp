@@ -56,8 +56,7 @@ void ASpyroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("LookVertical", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookHorizontal", this, &APawn::AddControllerYawInput);
 
-	/*PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed,this, &ASpyroCharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Released, this, &ASpyroCharacter::StopJumping);*/
+
 	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ASpyroCharacter::CallJumpEvent);
 	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Released, this, &ASpyroCharacter::CallEndJumpEvent);
 }
@@ -121,6 +120,38 @@ void ASpyroCharacter::CallJumpEvent()
 void ASpyroCharacter::CallEndJumpEvent()
 {
 	StopJumpEvent();
+}
+
+void ASpyroCharacter::Glide()
+{
+	if (CharacterMovementComponent)
+	{
+		CharacterMovementComponent->Velocity.Z = 0.f;
+		CharacterMovementComponent->AirControl = 0.7f; 
+		CharacterMovementComponent->GravityScale = 0.07f;
+	}
+}
+
+bool ASpyroCharacter::IsAirbornAfterJump()
+{
+	bool state = false;
+	if(CharacterMovementComponent)
+	{
+		state = CharacterMovementComponent->IsFalling();
+	}
+
+	return state;
+}
+
+void ASpyroCharacter::StopGliding()
+{
+	IsGliding = false;
+
+	if (CharacterMovementComponent)
+	{
+		CharacterMovementComponent->AirControl = 0.2f; //default value
+		CharacterMovementComponent->GravityScale = 1.f;
+	}
 }
 
 

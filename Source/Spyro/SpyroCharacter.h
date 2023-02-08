@@ -65,7 +65,21 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void StopJumpEvent();
+
+
 	
 private:
 	class UCharacterMovementComponent* CharacterMovementComponent;
+
+	bool IsGliding = false;
+
+	//Function for BlueprintUse
+	UFUNCTION(BlueprintPure)
+	bool IsAirbornAfterJump();
+
+	UFUNCTION(BlueprintCallable)
+	void StopGliding();
+
+	UFUNCTION(BlueprintCallable)
+	void Glide();
 };
