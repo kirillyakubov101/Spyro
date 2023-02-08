@@ -14,10 +14,6 @@ ASpyroCharacter::ASpyroCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	bUseControllerRotationYaw = false;
 
-
-	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
-	BodyMesh->SetupAttachment(RootComponent);
-
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
 	SpringArm->bUsePawnControlRotation = true;
@@ -34,13 +30,23 @@ void ASpyroCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	CharacterMovementComponent = GetCharacterMovement(); //get the characterMovement
-
+	DirectionMove = FVector(0,0,0);
 }
 
 // Called every frame
 void ASpyroCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (CharacterMovementComponent == nullptr) { return; }
+
+	if (CharacterMovementComponent->IsMovingOnGround())
+	{
+		StopGliding();
+		CanGlide = true;
+	}
+	
+
 }
 
 // Called to bind functionality to input
@@ -114,21 +120,34 @@ void ASpyroCharacter::MoveHorizontal(float axis)
 
 void ASpyroCharacter::CallJumpEvent()
 {
-	JumpEvent();
+	//JumpEvent();
+	Jump();
+	if (IsAirbornAfterJump() && CanGlide)
+	{
+		Glide();
+		CanGlide = false;
+	}
+	else 
+	{
+		StopGliding();
+	}
 }
 
 void ASpyroCharacter::CallEndJumpEvent()
 {
-	StopJumpEvent();
+	//StopJumpEvent();
+	StopJumping();
 }
+
+
 
 void ASpyroCharacter::Glide()
 {
 	if (CharacterMovementComponent)
 	{
 		CharacterMovementComponent->Velocity.Z = 0.f;
-		CharacterMovementComponent->AirControl = 0.7f; 
-		CharacterMovementComponent->GravityScale = 0.07f;
+		CharacterMovementComponent->AirControl = AirControlGlide;
+		CharacterMovementComponent->GravityScale = GravityScaleGlide;
 	}
 }
 
@@ -145,13 +164,40 @@ bool ASpyroCharacter::IsAirbornAfterJump()
 
 void ASpyroCharacter::StopGliding()
 {
-	IsGliding = false;
-
 	if (CharacterMovementComponent)
 	{
 		CharacterMovementComponent->AirControl = 0.2f; //default value
 		CharacterMovementComponent->GravityScale = 1.f;
 	}
 }
+
+//Testing
+void ASpyroCharacter::TestForwardMove(float axis)
+{
+	DirectionMove.Z = axis;
+}
+
+//Testing
+void ASpyroCharacter::RotateTowardsMoveDirection()
+{
+	DirectionMove.Normalize();
+
+	if (DirectionMove.Length() >= 0.1f)
+	{
+		float targetAngle = FMath::Atan2(DirectionMove.X, DirectionMove.Z);
+		targetAngle = FMath::RadiansToDegrees(targetAngle);
+		targetAngle += CameraMain->GetComponentRotation().Yaw;
+		FRotator GoalRotation = FRotator(0, targetAngle, 0);
+		FRotator CurrentRotation = FMath::RInterpTo(GetActorRotation(), GoalRotation, GetWorld()->GetDeltaSeconds(), TurnRate);
+		SetActorRotation(CurrentRotation);
+	}
+}
+
+//Testing
+void ASpyroCharacter::TestHorizontalMove(float axis)
+{
+	DirectionMove.X = axis;
+}
+
 
 

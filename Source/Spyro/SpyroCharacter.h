@@ -30,6 +30,7 @@ public:
 
 private:
 
+	//stats and components
 	UPROPERTY(EditDefaultsOnly)
 	class USpringArmComponent* SpringArm;
 
@@ -48,13 +49,21 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Stats")
 	float TurnRate;
 
-	UPROPERTY(EditAnywhere, Category = "Stats")
-	UStaticMeshComponent* BodyMesh;
+	//Gliding stats
+	UPROPERTY(EditDefaultsOnly, Category = "Gliding")
+	float GravityScaleGlide = 0.07f;
 
-	
+	UPROPERTY(EditDefaultsOnly, Category = "Gliding")
+	float AirControlGlide = 0.7f;
 
 	void MoveForward(float axis);
 	void MoveHorizontal(float axis);
+
+	//Test
+	void TestForwardMove(float axis);
+	void TestHorizontalMove(float axis);
+	void RotateTowardsMoveDirection();
+	FVector DirectionMove;
 
 	void CallJumpEvent();
 	void CallEndJumpEvent();
@@ -71,7 +80,7 @@ public:
 private:
 	class UCharacterMovementComponent* CharacterMovementComponent;
 
-	bool IsGliding = false;
+	bool CanGlide = false;
 
 	//Function for BlueprintUse
 	UFUNCTION(BlueprintPure)
